@@ -36,7 +36,7 @@ const refreshPassword = sequelize.define(
   "refreshPassword",
   {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-    accessCoe: { type: DataTypes.INTEGER, unique: false, allowNull: true },
+    accessCode: { type: DataTypes.INTEGER, unique: false, allowNull: true },
   },
   {
     freezeTableName: true,

@@ -17,5 +17,6 @@ router.post("/logout", PersonController.logout);
 router.get("/activate/:link", PersonController.activate);
 router.get("/refresh", PersonController.refresh);
 router.get("/user/:id", authMiddleware, PersonController.getInfoUser);
-
+router.post("/getCodeRestore", PersonController.getCodeRestore);
+router.patch("/restorePassword", PersonController.restorePassword);
 module.exports = router;

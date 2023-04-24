@@ -1,4 +1,4 @@
-const { users, modelLink } = require("../models/models");
+const { users, modelLink, refreshPassword } = require("../models/models");
 const bcrypt = require("bcrypt");
 const uuid = require("uuid");
 const mailService = require("./mail-service");
@@ -85,6 +85,40 @@ class UserService {
       throw ApiError.BadRequest("Пользователь не найден");
     }
     return user;
+  }
+  async sendCode(email) {
+    if (!email) {
+      throw ApiError("EMail отсутствует");
+    }
+    const user = await users.findOne({ where: { email } });
+    if (!user) {
+      throw ApiError.BadRequest("Пользователя не существует");
+    }
+    const randomNumber = Math.floor(Math.random() * (999999 - 100000 + 1) + 100000);
+
+    const findCode = await refreshPassword.findOne({ where: { userId: user.id } });
+    if (findCode) {
+      await refreshPassword.update({ accessCode: randomNumber }, { where: { userId: user.id } });
+      return randomNumber;
+    }
+
+    await refreshPassword.create({ userId: user.id, accessCode: randomNumber });
+
+    return randomNumber;
+  }
+
+  async changePasswordRestore(email, password, accessCode) {
+    const user = await users.findOne({ where: { email } });
+    if (!user) {
+      throw ApiError.BadRequest("Пользователя не существует");
+    }
+    const data = await refreshPassword.findOne({ where: { userId: user.id, accessCode } });
+    if (!data) {
+      throw ApiError.BadRequest("Неверный код");
+    }
+    const hashPassword = await bcrypt.hash(password, 3);
+    await users.update({ password: hashPassword }, { where: { email } });
+    return true;
   }
 }
 

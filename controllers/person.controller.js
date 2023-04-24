@@ -1,6 +1,7 @@
 const userService = require("../service/user-service");
 const { validationResult } = require("express-validator");
 const ApiError = require("../exceptions/api-error");
+const mailService = require("../service/mail-service");
 class PersonController {
   async registration(req, res, next) {
     try {
@@ -62,6 +63,28 @@ class PersonController {
 
       const user = await userService.getUser(id);
       return res.json(user);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getCodeRestore(req, res, next) {
+    try {
+      const { email } = req.body;
+      const code = await userService.sendCode(email);
+
+      const sendCode = await mailService.sendRestoreCode(email, code);
+      return res.json("access");
+    } catch (error) {
+      next(error);
+    }
+  }
+  async restorePassword(req, res, next) {
+    try {
+      const { email, password, accessCode } = req.body;
+
+      await userService.changePasswordRestore(email, password, accessCode);
+      return res.json("access");
     } catch (error) {
       next(error);
     }
