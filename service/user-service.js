@@ -80,7 +80,8 @@ class UserService {
     if (!id) {
       throw ApiError.BadRequest("id отсутствует");
     }
-    const user = await users.findAll({ where: { id } });
+    const user = await users.findOne({ where: { id } });
+    console.log(user);
     if (!user) {
       throw ApiError.BadRequest("Пользователь не найден");
     }
@@ -118,7 +119,14 @@ class UserService {
     }
     const hashPassword = await bcrypt.hash(password, 3);
     await users.update({ password: hashPassword }, { where: { email } });
-    return true;
+
+    const userDto = new UserDto(user);
+    const tokens = tokenService.generateTokens({ ...userDto });
+    await tokenService.saveToken(user.id, tokens.refreshToken);
+    return {
+      ...tokens,
+      user: userDto,
+    };
   }
 }
 

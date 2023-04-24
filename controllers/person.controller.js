@@ -62,7 +62,17 @@ class PersonController {
       const { id } = req.params;
 
       const user = await userService.getUser(id);
-      return res.json(user);
+      delete user.password;
+      return res.json({
+        email: user.email,
+        id: user.id,
+        name: user.name,
+        surname: user.surname,
+        tiers: user.tiers,
+        isActivated: user.isActivated,
+        updatedAt: user.updatedAt,
+        createdAt: user.createdAt,
+      });
     } catch (error) {
       next(error);
     }
@@ -83,8 +93,9 @@ class PersonController {
     try {
       const { email, password, accessCode } = req.body;
 
-      await userService.changePasswordRestore(email, password, accessCode);
-      return res.json("access");
+      const userData = await userService.changePasswordRestore(email, password, accessCode);
+      res.cookie("refreshToken", userData.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true });
+      return res.json({ userData });
     } catch (error) {
       next(error);
     }
