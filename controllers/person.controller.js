@@ -66,8 +66,7 @@ class PersonController {
       return res.json({
         email: user.email,
         id: user.id,
-        name: user.name,
-        surname: user.surname,
+        nickname: user.nickname,
         tiers: user.tiers,
         isActivated: user.isActivated,
         updatedAt: user.updatedAt,

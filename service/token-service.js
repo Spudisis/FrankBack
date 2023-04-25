@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 const { TokenSchema } = require("../models/models");
 class TokenService {
   generateTokens(payload) {
-    const accessToken = jwt.sign(payload, process.env.SECRET_KEY_ACCESS, { expiresIn: "30m" });
+    const accessToken = jwt.sign(payload, process.env.SECRET_KEY_ACCESS, { expiresIn: "1h" });
     const refreshToken = jwt.sign(payload, process.env.SECRET_KEY_REFRESH, { expiresIn: "30d" });
     return { accessToken, refreshToken };
   }

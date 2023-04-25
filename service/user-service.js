@@ -16,7 +16,8 @@ class UserService {
     const hashPassword = await bcrypt.hash(password, 3);
     const activateLink = uuid.v4();
     console.log(email, password);
-    const user = await users.create({ email: email, password: hashPassword });
+    const randNick = uuid.v4().slice(0, 10);
+    const user = await users.create({ email: email, nickname: randNick, password: hashPassword });
     console.log("USER:" + user);
     const createLink = await modelLink.create({ userId: user.id, activateLink });
     await mailService.sendActivationMail(email, `${process.env.SERVER_URL}/api/person/activate/${activateLink}`);
