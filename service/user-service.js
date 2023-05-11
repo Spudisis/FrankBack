@@ -36,7 +36,25 @@ class UserService {
     }
     const changeUser = await users.update({ isActivated: true }, { where: { id: user.userId } });
   }
+  async changeUserInfo(oldNickname, nickname, password) {
+    const objectUpd = {};
+    if (nickname) {
+      const checkNick = await users.findOne({ where: { nickname } });
+      if (checkNick) {
+        throw ApiError.BadRequest("Такой никнейм уже занят");
+      }
+      objectUpd.nickname = nickname;
+    }
+    if (password) {
+      const hashPassword = await bcrypt.hash(password, 3);
+      objectUpd.password = hashPassword;
+    }
 
+    const findUser = await users.findOne({ where: { nickname: oldNickname } });
+    if (findUser) {
+      await users.update(objectUpd, { where: { nickname: oldNickname } });
+    }
+  }
   async login(email, password) {
     const user = await users.findOne({ where: { email } });
     if (!user) {

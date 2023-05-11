@@ -88,6 +88,14 @@ class PersonController {
       next(error);
     }
   }
+  async changeInfoUser(req, res, next) {
+    try {
+      const { oldNickname, nickname, password } = req.body;
+      const res = await userService.changeUserInfo(oldNickname, nickname, password);
+    } catch (error) {
+      next(error);
+    }
+  }
   async restorePassword(req, res, next) {
     try {
       const { email, password, accessCode } = req.body;
