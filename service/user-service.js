@@ -38,13 +38,16 @@ class UserService {
   }
   async changeUserInfo(oldNickname, nickname, password) {
     const objectUpd = {};
-    if (nickname) {
-      const checkNick = await users.findOne({ where: { nickname } });
-      if (checkNick) {
-        throw ApiError.BadRequest("Такой никнейм уже занят");
+    if (nickname !== oldNickname) {
+      if (nickname) {
+        const checkNick = await users.findOne({ where: { nickname } });
+        if (checkNick) {
+          throw ApiError.BadRequest("Такой никнейм уже занят");
+        }
+        objectUpd.nickname = nickname;
       }
-      objectUpd.nickname = nickname;
     }
+
     if (password) {
       const hashPassword = await bcrypt.hash(password, 3);
       objectUpd.password = hashPassword;

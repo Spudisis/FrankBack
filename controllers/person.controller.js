@@ -91,7 +91,8 @@ class PersonController {
   async changeInfoUser(req, res, next) {
     try {
       const { oldNickname, nickname, password } = req.body;
-      const res = await userService.changeUserInfo(oldNickname, nickname, password);
+      const result = await userService.changeUserInfo(oldNickname, nickname, password);
+      return res.json("access");
     } catch (error) {
       next(error);
     }
