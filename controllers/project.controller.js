@@ -28,8 +28,11 @@ class ProjectController {
     async deleteProject(req, res, next){
         try{
             //add user validation
-            const { projectName } = req.body;
+            const { projectUid } = req.body;
 
+            const result = await projectService.deleteProject(projectUid);
+            
+            return res.json({ result });
         } catch(error){
             next(error);
         }
@@ -38,9 +41,11 @@ class ProjectController {
     async updateProject(req, res, next){
         try{
             //add user validation
+            //add valid response 
             const { projectUid, newLayout } = req.body;
 
-            const updatedInfo = await projectService.overwriteProject(projectUid);
+            const updatedInfo = await projectService.overwriteProject(projectUid, newLayout);
+            
             return res.json({ updatedInfo });
         } catch(error){
             next(error);
