@@ -16,6 +16,7 @@ tasks:
 -------------------------------person group (host:8080/api/person/)-------------------------------
 
 host:8080/api/person/login
+METHOD: POST
 
 request body: 
 {
@@ -39,36 +40,44 @@ response body:
 ---
 
 host:8080/api/person/logout
+METHOD: POST
 
 ---
 
 host:8080/api/person/activate/:link
+METHOD: GET
 
 ---
 
 host:8080/api/person/refresh
+METHOD: GET
 
 ---
 
 host:8080/api/person/user/:id
+METHOD: GET
 
 ---
 
 host:8080/api/person/getCodeRestore
+METHOD: POST
 
 ---
 
 host:8080/api/person/restorePassword
+METHOD: PATCH
 
 ---
 
 host:8080/api/person/changeInfoUser
+METHOD: PATCH
 
 ---
 
 --------------------------------project group (host:8080/api/project/)-----------------------------
 
 host:8080/api/project/createnew
+METHOD: POST
 
 request body: 
 {
@@ -83,6 +92,7 @@ response body:
 ---
 
 host:8080/api/project/delete
+METHOD: DELETE
 
 request body:
 {
@@ -96,6 +106,7 @@ response body:
 ---
 
 host:8080/api/project/public-projects
+METHOD: GET
 
 request body:
 {}
@@ -131,6 +142,7 @@ response body:
 ---
 
 host:8080/api/project/project-info/:id
+METHOD: GET
 
 request body:
 {}
@@ -151,6 +163,7 @@ response body:
 ---
 
 host:8080/api/project/update
+METHOD: POST
 
 request body:
 {
