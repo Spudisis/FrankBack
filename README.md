@@ -8,3 +8,4 @@ tasks:
 3. create endpoints list
 4. create endpoints body list
 5. remove id field from response for projects endpoints
+6. add valid response to project controllers method updateProject
