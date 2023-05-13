@@ -9,12 +9,10 @@ class ProjectService {
     async createEmptyProject(projectName, statusAccess){
         if(!projectName){
             throw ApiError.BadRequest("project name not exist");
-        } else if(!statusAccess){
-            throw ApiError.BadRequest("project status access not exist");
         }
         console.log(`New project setup; name: ${projectName}, access: ${statusAccess ? 'public' : 'private'}`);
         const randUID = uuid.v4().slice(0, 16);
-        const project = await projects.create({ uid: randUID, statusAccess: statusAccess, layout: '{}' });
+        const project = await projects.create({ uid: randUID, name: projectName, statusAccess: statusAccess, layout: '{}' });
         console.log('Project: ' + project);
         return randUID;
     }
