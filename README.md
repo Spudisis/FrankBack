@@ -18,6 +18,7 @@ tasks:
 13. change host:8080/api/projects/update to PATCH method
 14. add valid error responses to project controller methods
 15. add project controller methods: getUserIdByToken
+16. ошибка tokenShemas, перезаписывая токен при входе не создается новая запись под конкретного юзера, а перезаписывается одна запись на всех
 
 ------------------------------------------endpoints list------------------------------------------
 
