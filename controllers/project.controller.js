@@ -1,8 +1,9 @@
-const userService = require("../service/user-service");
 const { validationResult } = require("express-validator");
 const ApiError = require("../exceptions/api-error");
 const mailService = require("../service/mail-service");
 const projectService = require("../service/project-service");
+const TokenService = require("../service/token-service");
+const OwnersService = require("../service/owners-service")
 
 /*project controller
 usability: do work with projects
@@ -17,12 +18,19 @@ get one exact project
 class ProjectController {
     async createEmptyProject(req, res, next) {
         try {
+            const accessToken = req.headers.authorization.split(" ")[1];
+            const userId = TokenService.validateAccessToken(accessToken)['id'];
+
             const { projectName, statusAccess } = req.body;
-            const projectData = await projectService.createEmptyProject(
-                projectName,
-                statusAccess
-            );
-            return res.json({ projectData });
+            const projectData = await projectService.createEmptyProject(projectName,statusAccess);
+
+            if(projectData){
+                const ownerData = await OwnersService.addOwner(userId, projectData.id);
+            }
+
+            return res.json({ 
+                projectUid: projectData.uid
+            });
         } catch (error) {
             next(error);
         }

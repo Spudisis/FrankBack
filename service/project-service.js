@@ -14,7 +14,7 @@ class ProjectService {
         const randUID = uuid.v4().slice(0, 16);
         const project = await projects.create({ uid: randUID, name: projectName, statusAccess: statusAccess, layout: '{}' });
         console.log('Project: ' + project);
-        return randUID;
+        return project;
     }
 
     async deleteProject(projectUid){
