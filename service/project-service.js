@@ -71,7 +71,7 @@ class ProjectService {
 
     async getPublicProjects(page, limit){
         console.log(`Setup get public projects`);
-        const visibleProjects = await projects.findAll({
+        const visibleProjects = await projects.findAndCountAll({
             where: { statusAccess: true },
             limit: limit,
             offset: (page - 1) * limit
@@ -82,7 +82,7 @@ class ProjectService {
     async getListedProjects(projectsIdList, page, limit){
          
         console.log(`Setup get listed projects ${projectsIdList}`);
-        const listedProjects = await projects.findAll({
+        const listedProjects = await projects.findAndCountAll({
             where: {
                 id: projectsIdList,
             },
