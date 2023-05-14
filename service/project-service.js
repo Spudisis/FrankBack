@@ -47,8 +47,10 @@ class ProjectService {
         );
         if(result){
             console.log(`Updated rows: ${result}`);
+            return result;
         }else{
             console.log('Row not found');
+            return false;
         }
     }
 
@@ -60,19 +62,34 @@ class ProjectService {
         const project = await projects.findOne({ 
             where: { uid: projectUid } 
         });
-        console.log('Got project; ' + project);
         if (!project) {
             throw ApiError.BadRequest("Project not found");
         }
+        console.log('Got project; ' + project);
         return project;
     }
 
-    async getPublicProjects(){
+    async getPublicProjects(page, limit){
         console.log(`Setup get public projects`);
         const visibleProjects = await projects.findAll({
-            where: { statusAccess: true }
+            where: { statusAccess: true },
+            limit: limit,
+            offset: (page - 1) * limit
         });
         return visibleProjects;
+    }
+
+    async getListedProjects(projectsIdList, page, limit){
+         
+        console.log(`Setup get listed projects ${projectsIdList}`);
+        const listedProjects = await projects.findAll({
+            where: {
+                id: projectsIdList,
+            },
+            limit: limit,
+            offset: (page - 1) * limit
+        });
+        return listedProjects;
     }
 }
 

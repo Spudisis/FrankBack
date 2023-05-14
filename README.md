@@ -3,11 +3,11 @@ SCHEMA: https://drive.google.com/file/d/1HEZ827tZ4Dv7HuEkOSnChORGX_MSijwG/view?u
 
 
 tasks:
-1. add owners service and controller
-2. add owners record with createEmptyProject
-3. create endpoints list
-4. create endpoints body list
-5. remove id field from response for projects endpoints
+1. add owners service and controller +
+2. add owners record with createEmptyProject +
+3. create endpoints list +-
+4. create endpoints body list +-
+5. remove id field from response for projects endpoints +
 6. add valid response to project controllers method updateProject
 7. Отдельный эндпоинт для выборки последнего изменного проекта юзера (поле lastUpd). Вернуть сам проект
 8. 8080/api/project/public-projects через query пагинацию limit offset
@@ -15,6 +15,9 @@ tasks:
 10. 8080/api/project/public-projects вернуть вместе с массивом проектов ключ size - количество всех проектов вне зависимости от пагинации
 11. апи для получения всех проектов юзера вернуть вместе с массивом проектов ключ size - количество всех проектов вне зависимости от пагинации
 12. 8080/api/project/public-projects исключить из массива проэкты самого юзера, который запрашивал
+13. change host:8080/api/projects/update to PATCH method
+14. add valid error responses to project controller methods
+15. add project controller methods: doPagination, getUserIdByToken
 
 ------------------------------------------endpoints list------------------------------------------
 
