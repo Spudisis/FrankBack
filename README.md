@@ -12,12 +12,12 @@ tasks:
 7. Отдельный эндпоинт для выборки последнего изменного проекта юзера (поле lastUpd). Вернуть сам проект
 8. 8080/api/project/public-projects через query пагинацию limit offset
 9. апи для получения всех проектов юзера (аналогия со всеми Public проектами) с пагинацией. Через id юзера (важно именно через id) +
-10. 8080/api/project/public-projects вернуть вместе с массивом проектов ключ size - количество всех проектов вне зависимости от пагинации
-11. апи для получения всех проектов юзера вернуть вместе с массивом проектов ключ size - количество всех проектов вне зависимости от пагинации
+10. 8080/api/project/public-projects вернуть вместе с массивом проектов ключ size - количество всех проектов вне зависимости от пагинации +
+11. апи для получения всех проектов юзера вернуть вместе с массивом проектов ключ size - количество всех проектов вне зависимости от пагинации +
 12. 8080/api/project/public-projects исключить из массива проэкты самого юзера, который запрашивал
 13. change host:8080/api/projects/update to PATCH method
 14. add valid error responses to project controller methods
-15. add project controller methods: doPagination, getUserIdByToken
+15. add project controller methods: getUserIdByToken
 
 ------------------------------------------endpoints list------------------------------------------
 
@@ -84,7 +84,7 @@ METHOD: PATCH
 
 --------------------------------project group (host:8080/api/projects/)-----------------------------
 
-host:8080/api/projects/createnew
+host:8080/api/projects/createnew - authorization required!
 METHOD: POST
 
 request body:
@@ -99,7 +99,7 @@ response body:
 
 ---
 
-host:8080/api/projects/delete
+host:8080/api/projects/delete - authorization required!
 METHOD: DELETE
 
 request body:
@@ -113,8 +113,11 @@ response body:
 
 ---
 
-host:8080/api/projects/public-projects
+host:8080/api/projects/public-projects?p=1&l=5 - authorization required!
 METHOD: GET
+
+key "p" = page number
+key "l" = limit of records per page
 
 request body:
 {}
@@ -149,7 +152,7 @@ response body:
 
 ---
 
-host:8080/api/projects/project-info/:id
+host:8080/api/projects/project-info/:id - authorization required!
 METHOD: GET
 
 request body:
@@ -170,7 +173,7 @@ response body:
 
 ---
 
-host:8080/api/projects/update
+host:8080/api/projects/update - authorization required!
 METHOD: POST
 
 request body:
@@ -181,6 +184,54 @@ request body:
 response body:
 {}
 
+---
+
+host:8080/api/projects/my-projects?p=1&l=5 - authorization required!
+METHOD: GET
+
+key "p" = page number
+key "l" = limit of records per page
+
+request body:
+{}
+response body:
+{
+    "userProjects": {
+        "count": 3,
+        "rows": [
+            {
+                "id": 14,
+                "uid": "f7e94642-2ade-47",
+                "name": "test_proj_1",
+                "miniature": null,
+                "statusAccess": true,
+                "layout": "{}",
+                "createdAt": "2023-05-14T09:26:10.162Z",
+                "updatedAt": "2023-05-14T09:26:10.162Z"
+            },
+            {
+                "id": 15,
+                "uid": "ddd10711-e888-4a",
+                "name": "test_proj_1",
+                "miniature": null,
+                "statusAccess": true,
+                "layout": "{fuck}",
+                "createdAt": "2023-05-14T09:31:07.889Z",
+                "updatedAt": "2023-05-14T10:23:33.510Z"
+            },
+            {
+                "id": 17,
+                "uid": "969f9677-dfdb-4f",
+                "name": "test_proj_1",
+                "miniature": null,
+                "statusAccess": false,
+                "layout": "{}",
+                "createdAt": "2023-05-14T10:39:33.368Z",
+                "updatedAt": "2023-05-14T10:39:33.368Z"
+            }
+        ]
+    }
+}
 
 -----------------------------build system group (host:8080/api/build-system/)---------------------------
 

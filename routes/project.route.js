@@ -11,7 +11,7 @@ router.post("/createnew", authMiddleware, ProjectController.createEmptyProject);
 router.delete("/delete", authMiddleware, ProjectController.deleteProject);
 router.get("/public-projects", /*authMiddleware, */ProjectController.getPublicProjects);
 router.get("/project-info/:id", authMiddleware, ProjectController.getProjectInfo);
-router.post("/update", authMiddleware, ProjectController.updateProject);
+router.patch("/update", authMiddleware, ProjectController.updateProject);
 router.get("/my-projects", authMiddleware, ProjectController.getUserProjects)
 
 module.exports = router;
