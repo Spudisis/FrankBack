@@ -10,65 +10,71 @@ usability: do work with projects
 create empty one
 remove exact project
 change exact project
-get list of visible projects 
+get list of visible projects
 get one exact project
 */
 
 class ProjectController {
-    async createEmptyProject(req, res, next){
-        try{
+    async createEmptyProject(req, res, next) {
+        try {
             const { projectName, statusAccess } = req.body;
-            const projectData = await projectService.createEmptyProject(projectName, statusAccess);
+            const projectData = await projectService.createEmptyProject(
+                projectName,
+                statusAccess
+            );
             return res.json({ projectData });
         } catch (error) {
             next(error);
         }
     }
 
-    async deleteProject(req, res, next){
-        try{
+    async deleteProject(req, res, next) {
+        try {
             //add user validation
             const { projectUid } = req.body;
 
             const result = await projectService.deleteProject(projectUid);
-            
+
             return res.json({ result });
-        } catch(error){
+        } catch (error) {
             next(error);
         }
     }
 
-    async updateProject(req, res, next){
-        try{
+    async updateProject(req, res, next) {
+        try {
             //add user validation
-            //add valid response 
+            //add valid response
             const { projectUid, newLayout } = req.body;
 
-            const updatedInfo = await projectService.overwriteProject(projectUid, newLayout);
-            
+            const updatedInfo = await projectService.overwriteProject(
+                projectUid,
+                newLayout
+            );
+
             return res.json({ updatedInfo });
-        } catch(error){
+        } catch (error) {
             next(error);
         }
     }
 
-    async getProjectInfo(req, res, next){
-        try{
+    async getProjectInfo(req, res, next) {
+        try {
             //add user validation
             const { id } = req.params;
-            console.log(id)
+            console.log(id);
             const projectInfo = await projectService.getProject(id);
             return res.json({ projectInfo });
-        } catch(error){
+        } catch (error) {
             next(error);
         }
     }
 
-    async getPublicProjects(req, res, next){
-        try{
+    async getPublicProjects(req, res, next) {
+        try {
             const projects = await projectService.getPublicProjects();
             return res.json({ projects });
-        } catch(error){
+        } catch (error) {
             next(error);
         }
     }
