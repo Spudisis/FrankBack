@@ -59,8 +59,8 @@ class ProjectService {
             throw ApiError.BadRequest("project uid not exist");
         }
         console.log(`Setup get project; project uid: ${projectUid}`);
-        const project = await projects.findOne({ 
-            where: { uid: projectUid } 
+        const project = await projects.findOne({
+            where: { uid: projectUid }
         });
         if (!project) {
             throw ApiError.BadRequest("Project not found");
@@ -68,6 +68,22 @@ class ProjectService {
         console.log('Got project; ' + project);
         return project;
     }
+    
+    async getProjectById(id){
+        if (!id) {
+            throw ApiError.BadRequest("project id not exist");
+        }
+        console.log(`Setup get project; project id: ${id}`);
+        const project = await projects.findOne({
+            where: { id }
+        });
+        if (!project) {
+            throw ApiError.BadRequest("Project not found");
+        }
+        console.log('Got project; ' + project);
+        return project;
+    }
+
 
     async getPublicProjects(page, limit){
         console.log(`Setup get public projects`);
@@ -80,7 +96,7 @@ class ProjectService {
     }
 
     async getListedProjects(projectsIdList, page, limit){
-         
+
         console.log(`Setup get listed projects ${projectsIdList}`);
         const listedProjects = await projects.findAndCountAll({
             where: {

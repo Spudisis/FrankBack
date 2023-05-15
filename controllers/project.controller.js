@@ -16,21 +16,26 @@ get one exact project
 */
 
 class ProjectController {
-
     async createEmptyProject(req, res, next) {
         try {
             //add response with error if needed
             const accessToken = req.headers.authorization.split(" ")[1];
-            const userId = TokenService.validateAccessToken(accessToken)['id'];
+            const userId = TokenService.validateAccessToken(accessToken)["id"];
 
             const { projectName, statusAccess } = req.body;
-            const projectData = await projectService.createEmptyProject(projectName,statusAccess);
+            const projectData = await projectService.createEmptyProject(
+                projectName,
+                statusAccess
+            );
 
-            if(projectData){
-                const ownerData = await OwnersService.addOwner(userId, projectData.id);
-                if(ownerData){
-                    return res.json({ 
-                        projectUid: projectData.uid
+            if (projectData) {
+                const ownerData = await OwnersService.addOwner(
+                    userId,
+                    projectData.id
+                );
+                if (ownerData) {
+                    return res.json({
+                        projectUid: projectData.uid,
                     });
                 }
             }
@@ -43,17 +48,22 @@ class ProjectController {
         try {
             //add response with error if needed
             const accessToken = req.headers.authorization.split(" ")[1];
-            const userId = TokenService.validateAccessToken(accessToken)['id'];
+            const userId = TokenService.validateAccessToken(accessToken)["id"];
 
             const { projectUid } = req.body;
             const project = await projectService.getProject(projectUid);
 
-            if(project.id){
-                const validatedOwner = await OwnersService.validateOwner(userId, project.id);
-                if(validatedOwner){
-                    const result = await projectService.deleteProject(projectUid);
-                    if(result){
-                        return res.json({ result:200 });
+            if (project.id) {
+                const validatedOwner = await OwnersService.validateOwner(
+                    userId,
+                    project.id
+                );
+                if (validatedOwner) {
+                    const result = await projectService.deleteProject(
+                        projectUid
+                    );
+                    if (result) {
+                        return res.json({ result: 200 });
                     }
                 }
             }
@@ -66,25 +76,31 @@ class ProjectController {
         try {
             //add response with error if needed
             const accessToken = req.headers.authorization.split(" ")[1];
-            const userId = TokenService.validateAccessToken(accessToken)['id'];
+            const userId = TokenService.validateAccessToken(accessToken)["id"];
 
             const { projectUid, newLayout } = req.body;
             const project = await projectService.getProject(projectUid);
 
-            if(project.id){
-                const validatedOwner = await OwnersService.validateOwner(userId, project.id);
-                if(validatedOwner){
-                    const updatedInfo = await projectService.overwriteProject(projectUid, newLayout);
-                    if(updatedInfo){
-                        return res.json({ result:200 });
-                    }else{
-                        return res.json({ result:503 });
+            if (project.id) {
+                const validatedOwner = await OwnersService.validateOwner(
+                    userId,
+                    project.id
+                );
+                if (validatedOwner) {
+                    const updatedInfo = await projectService.overwriteProject(
+                        projectUid,
+                        newLayout
+                    );
+                    if (updatedInfo) {
+                        return res.json({ result: 200 });
+                    } else {
+                        return res.json({ result: 503 });
                     }
-                }else{
-                    return res.json({ result:503 });
+                } else {
+                    return res.json({ result: 503 });
                 }
-            }else{
-                return res.json({ result:503 });
+            } else {
+                return res.json({ result: 503 });
             }
         } catch (error) {
             next(error);
@@ -97,26 +113,29 @@ class ProjectController {
             const { id } = req.params;
 
             const accessToken = req.headers.authorization.split(" ")[1];
-            const userId = TokenService.validateAccessToken(accessToken)['id'];
+            const userId = TokenService.validateAccessToken(accessToken)["id"];
 
             const projectInfo = await projectService.getProject(id);
             delete projectInfo.id;
 
-            if(projectInfo.id){
-                const validatedOwner = await OwnersService.validateOwner(userId, projectInfo.id);
-                if(validatedOwner){
-                    return res.json({ 
+            if (projectInfo.id) {
+                const validatedOwner = await OwnersService.validateOwner(
+                    userId,
+                    projectInfo.id
+                );
+                if (validatedOwner) {
+                    return res.json({
                         uid: projectInfo.uid,
                         name: projectInfo.name,
                         miniature: projectInfo.miniature,
                         layout: projectInfo.layout,
                         creationDate: projectInfo.createdAt,
                         lastUpdateTime: projectInfo.updatedAt,
-                        statusAccess: projectInfo.statusAccess
+                        statusAccess: projectInfo.statusAccess,
                     });
-                }else{
-                    if(projectInfo.statusAccess){
-                        return res.json({ 
+                } else {
+                    if (projectInfo.statusAccess) {
+                        return res.json({
                             uid: projectInfo.uid,
                             name: projectInfo.name,
                             miniature: projectInfo.miniature,
@@ -124,11 +143,11 @@ class ProjectController {
                             lastUpdateTime: projectInfo.updatedAt,
                         });
                     } else {
-                        return res.json({ result:503 }); 
+                        return res.json({ result: 503 });
                     }
                 }
-            }else{
-                return res.json({ result:503 });
+            } else {
+                return res.json({ result: 503 });
             }
         } catch (error) {
             next(error);
@@ -139,35 +158,58 @@ class ProjectController {
         try {
             const pagination = req.query;
 
-            const projects = await projectService.getPublicProjects(pagination.p, pagination.l);
+            const projects = await projectService.getPublicProjects(
+                pagination.p,
+                pagination.l
+            );
             return res.json({ projects });
         } catch (error) {
             next(error);
         }
     }
 
-    async getUserProjects(req, res, next){
+    async getUserProjects(req, res, next) {
         try {
             const pagination = req.query;
 
             const accessToken = req.headers.authorization.split(" ")[1];
-            const userId = TokenService.validateAccessToken(accessToken)['id'];
+            const userId = TokenService.validateAccessToken(accessToken)["id"];
 
-            const ownerRecords = await OwnersService.getOwnerProjectsList(userId);
+            const ownerRecords = await OwnersService.getOwnerProjectsList(
+                userId
+            );
 
-            const projectsIds = []
+            const projectsIds = [];
 
-            ownerRecords.forEach(element => {
-                if(element.dataValues.projectId != null)
+            ownerRecords.forEach((element) => {
+                if (element.dataValues.projectId != null)
                     projectsIds.push(element.dataValues.projectId);
             });
 
-            if(ownerRecords.length > 0){
-                const userProjects = await projectService.getListedProjects(projectsIds, pagination.p, pagination.l)
-                if(userProjects){
+            if (ownerRecords.length > 0) {
+                const userProjects = await projectService.getListedProjects(
+                    projectsIds,
+                    pagination.p,
+                    pagination.l
+                );
+                if (userProjects) {
                     return res.json({ userProjects });
                 }
             }
+        } catch (error) {
+            next(error);
+        }
+    }
+    async getLastUpdateProjectByUser(req, res, next) {
+        try {
+            const { userId } = req.params;
+
+            if (!userId) {
+                throw new Error("Нет userId");
+            }
+            const findProjectOwners = await OwnersService.findLastUpdProjectUser(userId);
+            const project = await projectService.getProjectById(findProjectOwners.projectId)
+            return res.json(project);
         } catch (error) {
             next(error);
         }
