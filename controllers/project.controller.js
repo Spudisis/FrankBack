@@ -170,10 +170,7 @@ class ProjectController {
 
     async getUserProjects(req, res, next) {
         try {
-            const pagination = req.query;
-
-            const accessToken = req.headers.authorization.split(" ")[1];
-            const userId = TokenService.validateAccessToken(accessToken)["id"];
+            const { p, l, userId } = req.query;
 
             const ownerRecords = await OwnersService.getOwnerProjectsList(
                 userId
@@ -189,8 +186,8 @@ class ProjectController {
             if (ownerRecords.length > 0) {
                 const userProjects = await projectService.getListedProjects(
                     projectsIds,
-                    pagination.p,
-                    pagination.l
+                    p,
+                    l
                 );
                 if (userProjects) {
                     return res.json({ userProjects });
@@ -207,8 +204,11 @@ class ProjectController {
             if (!userId) {
                 throw new Error("Нет userId");
             }
-            const findProjectOwners = await OwnersService.findLastUpdProjectUser(userId);
-            const project = await projectService.getProjectById(findProjectOwners.projectId)
+            const findProjectOwners =
+                await OwnersService.findLastUpdProjectUser(userId);
+            const project = await projectService.getProjectById(
+                findProjectOwners.projectId
+            );
             return res.json(project);
         } catch (error) {
             next(error);

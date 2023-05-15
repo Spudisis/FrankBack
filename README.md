@@ -15,7 +15,8 @@ tasks:
 13. add valid error responses to project controller methods
 14. add project controller methods: getUserIdByToken
 15. изменение названия проекта, миниатюры (для sex с хранением картинок библиотека уже есть)
-
+16. модифицировать таблицу юзера, добавить private (true/false) - невозможность просмотра профиля
+17. при открытии чужого проекта и попытке изменить будет выдаваться окошко на фронте - добавить апи для копии проекта к себе
 ------------------------------------------endpoints list------------------------------------------
 
 -------------------------------person group (host:8080/api/person/)-------------------------------
@@ -147,10 +148,11 @@ request body:
 response body:
 {}
 ---
-host:8080/api/projects/my-projects?p=1&l=5 - authorization required!
+host:8080/api/projects/my-projects?p=1&l=5&userId=113 - authorization required!
 METHOD: GET
 key "p" = page number
 key "l" = limit of records per page
+key "userId" = get project for user id
 request body:
 {}
 response body:
