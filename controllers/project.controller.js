@@ -176,23 +176,25 @@ class ProjectController {
                 userId
             );
 
-            const projectsIds = [];
-
-            ownerRecords.forEach((element) => {
+            const projectsIds = ownerRecords.map((element) => {
                 if (element.dataValues.projectId != null)
-                    projectsIds.push(element.dataValues.projectId);
+                    return element.dataValues.projectId;
             });
 
-            if (ownerRecords.length > 0) {
-                const userProjects = await projectService.getListedProjects(
-                    projectsIds,
-                    p,
-                    l
-                );
-                if (userProjects) {
-                    return res.json({ userProjects });
-                }
+            if (!(ownerRecords.length > 0)) {
+                console.log("ownerRecords.length <= 0");
+                return res.json({ userProjects: { rows: [], count: 0 } });
             }
+            const userProjects = await projectService.getListedProjects(
+                projectsIds,
+                p,
+                l
+            );
+            if (!userProjects) {
+                console.log("userProjects is empty");
+                return res.json({ userProjects: { rows: [], count: 0 } });
+            }
+            return res.json({ userProjects });
         } catch (error) {
             next(error);
         }
