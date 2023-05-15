@@ -201,7 +201,8 @@ class ProjectController {
     }
     async getLastUpdateProjectByUser(req, res, next) {
         try {
-            const { userId } = req.params;
+            const accessToken = req.headers.authorization.split(" ")[1];
+            const userId = TokenService.validateAccessToken(accessToken)["id"];
 
             if (!userId) {
                 throw new Error("Нет userId");

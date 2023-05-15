@@ -13,6 +13,6 @@ router.get("/public-projects", /*authMiddleware, */ProjectController.getPublicPr
 router.get("/project-info/:id", authMiddleware, ProjectController.getProjectInfo);
 router.patch("/update", authMiddleware, ProjectController.updateProject);
 router.get("/my-projects", authMiddleware, ProjectController.getUserProjects)
-router.get('/last-update-project/:userId', authMiddleware, ProjectController.getLastUpdateProjectByUser)
+router.get('/last-update-project', authMiddleware, ProjectController.getLastUpdateProjectByUser)
 
 module.exports = router;
