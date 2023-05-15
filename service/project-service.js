@@ -71,6 +71,7 @@ class ProjectService {
         const project = await projects.findOne({
             where: { uid: projectUid },
         });
+        console.log(project);
         if (!project) {
             throw ApiError.BadRequest("Project not found");
         }

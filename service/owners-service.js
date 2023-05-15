@@ -63,11 +63,19 @@ class OwnersService {
         });
         console.log(result);
         const one = result[0].project;
+        console.log(result[0]);
         if (!one) {
             throw ApiError.BadRequest("Нет проектов");
         }
 
         return one;
+    }
+    async deleteProject(projectId) {
+        if (!projectId) {
+            throw ApiError.BadRequest("Нет projectId");
+        }
+        const res = await owners.destroy({ where: { projectId } });
+        return res;
     }
 }
 

@@ -4,6 +4,7 @@ const mailService = require("../service/mail-service");
 const projectService = require("../service/project-service");
 const TokenService = require("../service/token-service");
 const OwnersService = require("../service/owners-service");
+const ownersService = require("../service/owners-service");
 
 /*project controller
 usability: do work with projects
@@ -53,20 +54,24 @@ class ProjectController {
             const { projectUid } = req.body;
             const project = await projectService.getProject(projectUid);
 
-            if (project.id) {
-                const validatedOwner = await OwnersService.validateOwner(
-                    userId,
-                    project.id
-                );
-                if (validatedOwner) {
-                    const result = await projectService.deleteProject(
-                        projectUid
-                    );
-                    if (result) {
-                        return res.json({ result: 200 });
-                    }
-                }
+            if (!project.id) {
+                next("нет project.id");
             }
+            const validatedOwner = await OwnersService.validateOwner(
+                userId,
+                project.id
+            );
+            if (!validatedOwner) {
+                next("нет validatedOwner");
+            }
+            const resDelOwners = await ownersService.deleteProject(project.id);
+            const result = await projectService.deleteProject(projectUid);
+
+            if (!resDelOwners || !result) {
+                next("нет !resDelOwners || !result");
+            }
+
+            return res.json({ result: 200 });
         } catch (error) {
             next(error);
         }
@@ -80,7 +85,9 @@ class ProjectController {
 
             const { projectUid, newLayout } = req.body;
             const project = await projectService.getProject(projectUid);
-
+            if (project.layout === newLayout) {
+                return res.json({ result: "not found changes" });
+            }
             if (project.id) {
                 const validatedOwner = await OwnersService.validateOwner(
                     userId,
