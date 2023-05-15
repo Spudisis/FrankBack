@@ -14,7 +14,7 @@ tasks:
 12. change host:8080/api/projects/update to PATCH method
 13. add valid error responses to project controller methods
 14. add project controller methods: getUserIdByToken
-15. изменение названия проекта, миниатюры (для sex с хранением картинок библиотека уже есть)
+15. изменение названия проекта, миниатюры, statusAccesss (для sex с хранением картинок библиотека уже есть)
 16. модифицировать таблицу юзера, добавить private (true/false) - невозможность просмотра профиля, не забыть обновить схему в draw.io
 17. добавить апи для копии проекта к себе по uid проекта, айди юзера брать с куков
 ------------------------------------------endpoints list------------------------------------------
