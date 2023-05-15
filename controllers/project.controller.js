@@ -209,10 +209,8 @@ class ProjectController {
             }
             const findProjectOwners =
                 await OwnersService.findLastUpdProjectUser(userId);
-            const project = await projectService.getProjectById(
-                findProjectOwners.projectId
-            );
-            return res.json(project);
+
+            return res.json(findProjectOwners);
         } catch (error) {
             next(error);
         }

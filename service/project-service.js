@@ -6,34 +6,43 @@ const tokenService = require("./token-service");
 const ApiError = require("../exceptions/api-error");
 
 class ProjectService {
-    async createEmptyProject(projectName, statusAccess){
-        if(!projectName){
+    async createEmptyProject(projectName, statusAccess) {
+        if (!projectName) {
             throw ApiError.BadRequest("project name not exist");
         }
-        console.log(`New project setup; name: ${projectName}, access: ${statusAccess ? 'public' : 'private'}`);
+        console.log(
+            `New project setup; name: ${projectName}, access: ${
+                statusAccess ? "public" : "private"
+            }`
+        );
         const randUID = uuid.v4().slice(0, 16);
-        const project = await projects.create({ uid: randUID, name: projectName, statusAccess: statusAccess, layout: '{}' });
-        console.log('Project: ' + project);
+        const project = await projects.create({
+            uid: randUID,
+            name: projectName,
+            statusAccess: statusAccess,
+            layout: "{}",
+        });
+        console.log("Project: " + project);
         return project;
     }
 
-    async deleteProject(projectUid){
-        if(!projectUid){
+    async deleteProject(projectUid) {
+        if (!projectUid) {
             throw ApiError.BadRequest("project uid not exist");
         }
         console.log(`Setup project delete process; project uid: ${projectUid}`);
         const result = await projects.destroy({
-            where: {uid: projectUid}
+            where: { uid: projectUid },
         });
-        if(result){
+        if (result) {
             return true;
         } else {
             return false;
         }
     }
 
-    async overwriteProject(projectUid, newLayout){
-        if(!projectUid){
+    async overwriteProject(projectUid, newLayout) {
+        if (!projectUid) {
             throw ApiError.BadRequest("project uid not exist");
         }
         console.log(`Setup project rewrite; project uid: ${projectUid}`);
@@ -45,65 +54,64 @@ class ProjectService {
                 where: { uid: projectUid },
             }
         );
-        if(result){
+        if (result) {
             console.log(`Updated rows: ${result}`);
             return result;
-        }else{
-            console.log('Row not found');
+        } else {
+            console.log("Row not found");
             return false;
         }
     }
 
-    async getProject(projectUid){
+    async getProject(projectUid) {
         if (!projectUid) {
             throw ApiError.BadRequest("project uid not exist");
         }
         console.log(`Setup get project; project uid: ${projectUid}`);
         const project = await projects.findOne({
-            where: { uid: projectUid }
+            where: { uid: projectUid },
         });
         if (!project) {
             throw ApiError.BadRequest("Project not found");
         }
-        console.log('Got project; ' + project);
+        console.log("Got project; " + project);
         return project;
     }
-    
-    async getProjectById(id){
+
+    async getProjectById(id) {
         if (!id) {
             throw ApiError.BadRequest("project id not exist");
         }
         console.log(`Setup get project; project id: ${id}`);
         const project = await projects.findOne({
-            where: { id }
+            order: [["updatedAt", "DESC"]],
+            where: { id },
         });
         if (!project) {
             throw ApiError.BadRequest("Project not found");
         }
-        console.log('Got project; ' + project);
+        console.log("Got project; " + project);
         return project;
     }
 
-
-    async getPublicProjects(page, limit){
+    async getPublicProjects(page, limit) {
         console.log(`Setup get public projects`);
         const visibleProjects = await projects.findAndCountAll({
             where: { statusAccess: true },
             limit: limit,
-            offset: (page - 1) * limit
+            offset: (page - 1) * limit,
         });
         return visibleProjects;
     }
 
-    async getListedProjects(projectsIdList, page, limit){
-
+    async getListedProjects(projectsIdList, page, limit) {
         console.log(`Setup get listed projects ${projectsIdList}`);
         const listedProjects = await projects.findAndCountAll({
             where: {
                 id: projectsIdList,
             },
             limit: limit,
-            offset: (page - 1) * limit
+            offset: (page - 1) * limit,
         });
         return listedProjects;
     }

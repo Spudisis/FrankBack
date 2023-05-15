@@ -1,6 +1,6 @@
 const tokenService = require("./token-service");
 const ApiError = require("../exceptions/api-error");
-const { owners } = require("../models/models");
+const { owners, projects } = require("../models/models");
 
 class OwnersService {
     async addOwner(userId, projectId) {
@@ -50,17 +50,24 @@ class OwnersService {
         return result;
     }
     async findLastUpdProjectUser(userId) {
-        const result = await owners.findOne({
-            order: [["updatedAt", "DESC"]],
+        const result = await owners.findAll({
             where: {
                 userId: userId,
             },
+            include: [
+                {
+                    model: projects,
+                },
+            ],
+            order: [[projects, "updatedAt", "DESC"]],
         });
-        if (!result){
+        console.log(result);
+        const one = result[0].project;
+        if (!one) {
             throw ApiError.BadRequest("Нет проектов");
         }
 
-        return result
+        return one;
     }
 }
 
