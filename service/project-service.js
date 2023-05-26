@@ -111,6 +111,7 @@ class ProjectService {
             where: {
                 id: projectsIdList,
             },
+            order: [["updatedAt", "DESC"]],
             limit: limit,
             offset: (page - 1) * limit,
         });
