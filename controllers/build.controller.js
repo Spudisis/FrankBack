@@ -3,22 +3,21 @@ const ApiError = require("../exceptions/api-error");
 const buildService = require("../service/build-service");
 
 class BuildController {
-    async startBuild(req, res, next){
+    async startBuild(req, res, next) {
         //add user validation
-        try{
+        try {
             const { projectUid } = req.body;
 
             const result = await buildService.startBuild(projectUid);
-            
+
             res.json({ result });
-        } catch(error){
+        } catch (error) {
             next(error);
         }
     }
 
-    async interruptBuild(projectUid){
+    async interruptBuild(projectUid) {
         //add user validation
-
     }
 }
 

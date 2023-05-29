@@ -65,7 +65,7 @@ class TemplatesController {
 
     async deleteTemplate(req, res, next) {
         try {
-            const { id } = req.body;
+            const { id } = req.query;
             const accessToken = req.headers.authorization.split(" ")[1];
             const userId = TokenService.validateAccessToken(accessToken)["id"];
             await TemplateService.deleteTemplate(id, userId);

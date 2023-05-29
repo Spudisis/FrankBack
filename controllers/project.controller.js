@@ -5,6 +5,9 @@ const projectService = require("../service/project-service");
 const TokenService = require("../service/token-service");
 const OwnersService = require("../service/owners-service");
 const ownersService = require("../service/owners-service");
+const path = require("path");
+const uuid = require("uuid");
+
 
 /*project controller
 usability: do work with projects
@@ -20,13 +23,25 @@ class ProjectController {
     async createEmptyProject(req, res, next) {
         try {
             //add response with error if needed
+
             const accessToken = req.headers.authorization.split(" ")[1];
             const userId = TokenService.validateAccessToken(accessToken)["id"];
 
             const { projectName, statusAccess } = req.body;
+
+            let fileName = "";
+
+            if (req.files && req.files.miniature) {
+                const { miniature } = req.files;
+
+                fileName = uuid.v4() + ".jpg";
+                miniature.mv(path.resolve(__dirname, "..", "static", fileName));
+            }
+
             const projectData = await projectService.createEmptyProject(
                 projectName,
-                statusAccess
+                statusAccess,
+                fileName
             );
 
             if (projectData) {

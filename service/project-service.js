@@ -3,10 +3,12 @@ const bcrypt = require("bcrypt");
 const uuid = require("uuid");
 const mailService = require("./mail-service");
 const tokenService = require("./token-service");
+const FsService = require("./fs-service");
 const ApiError = require("../exceptions/api-error");
-
+const fs = require("fs");
+const path = require("path");
 class ProjectService {
-    async createEmptyProject(projectName, statusAccess) {
+    async createEmptyProject(projectName, statusAccess, miniature) {
         if (!projectName) {
             throw ApiError.BadRequest("project name not exist");
         }
@@ -20,6 +22,7 @@ class ProjectService {
             uid: randUID,
             name: projectName,
             statusAccess: statusAccess,
+            miniature,
             layout: "{}",
         });
         console.log("Project: " + project);
@@ -31,9 +34,12 @@ class ProjectService {
             throw ApiError.BadRequest("project uid not exist");
         }
         console.log(`Setup project delete process; project uid: ${projectUid}`);
+        const project = await projects.findOne({ where: { uid: projectUid } });
         const result = await projects.destroy({
             where: { uid: projectUid },
         });
+
+        FsService.deleteFile(project.miniature);
         if (result) {
             return true;
         } else {

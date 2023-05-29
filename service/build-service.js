@@ -1,23 +1,32 @@
 const tokenService = require("./token-service");
 const ApiError = require("../exceptions/api-error");
-const request = require('request');
+const fetch = require("node-fetch");
 
 class BuildService {
-    async startBuild(projectUid){
-        console.log(`Start build for project ${projectUid};`)
-          
-        const result = await request.post({
-            headers: {'content-type' : 'application/x-www-form-urlencoded'},
-            url: `http://${process.env.BUILD_SYSTEM_COORDINATOR_ADRESS}:${process.env.BUILD_SYSTEM_COORDINATOR_PORT}`,
-            body: JSON.stringify({ 'purpose': 'start_build', 'project_name': projectUid })
-        });
+    async startBuild(projectUid) {
+        console.log(`Start build for project ${projectUid};`);
 
-        return 200;
+        const result = await fetch(
+            `http://${process.env.BUILD_SYSTEM_COORDINATOR_ADRESS}:${process.env.BUILD_SYSTEM_COORDINATOR_PORT}`,
+            {
+                method: "POST",
+                headers: {
+                    "content-type": "application/x-www-form-urlencoded",
+                },
+
+                body: JSON.stringify({
+                    purpose: "start_build",
+                    project_name: projectUid,
+                }),
+            }
+        );
+        if (result) {
+            return 200;
+        }
+        return ApiError.BadRequest("ERROR");
     }
 
-    async interruptBuild(projectUid){
-
-    }
+    async interruptBuild(projectUid) {}
 }
 
 module.exports = new BuildService();
