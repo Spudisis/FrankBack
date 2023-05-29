@@ -1,6 +1,7 @@
 const ApiError = require("../exceptions/api-error");
 const TokenService = require("../service/token-service");
 const TemplateService = require("../service/template-service");
+const FsService = require("../service/fs-service");
 class TemplatesController {
     async getTemplates(req, res, next) {
         try {
@@ -41,10 +42,14 @@ class TemplatesController {
     async createTemplate(req, res, next) {
         try {
             const body = req.body;
-
+            const fileName = await FsService.createFile(req.files);
             const accessToken = req.headers.authorization.split(" ")[1];
             const userId = TokenService.validateAccessToken(accessToken)["id"];
-            const template = await TemplateService.createTemplate(body, userId);
+            const template = await TemplateService.createTemplate(
+                body,
+                fileName,
+                userId
+            );
             res.json(template);
         } catch (error) {
             next(error);

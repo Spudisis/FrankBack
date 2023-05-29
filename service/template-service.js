@@ -47,14 +47,18 @@ class TemplateService {
         return listTemplateUser;
     }
 
-    async createTemplate(body, userId) {
-        const { name, privateStatus, type, layout, miniature } = body;
+    async createTemplate(body, fileName, userId) {
+        const { name, privateStatus, type, layout } = body;
         if (!name || !type || !layout || !userId) {
             throw ApiError.BadRequest(
                 "Not found !name || !privateStatus || !layout || !userId"
             );
         }
-        const template = await Templates.create({ ...body, userId });
+        const template = await Templates.create({
+            ...body,
+            miniature: fileName,
+            userId,
+        });
         return template;
     }
 
